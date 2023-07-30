@@ -1,0 +1,188 @@
+<div class="wrapper" [hidden]="isInitalLoading || (!isInitalLoading && !isSuccess)">
+  <nav id="sidebar" class="sidebar {{ isSidebarCollapsed ? 'collapsed' : '' }}">
+    <div class="sidebar-content js-simplebar">
+      <a class="sidebar-brand" [routerLink]="['']">
+        <span class="align-middle">{{ appConfig.APP_NAME }}</span>
+      </a>
+
+      <div class="sidebar-user cursor-pointer" [routerLink]="['/home/profile']">
+        <div class="d-flex justify-content-center">
+          <div class="flex-shrink-0">
+            <img src="/assets/avatar.png" class="avatar img-fluid rounded me-1" />
+          </div>
+          <div class="flex-grow-1 cursor-pointer ps-2">
+            <a class="sidebar-user-title">
+              {{ (auth$ | async).user?.first_name + ' ' + (auth$ | async).user?.last_name }}
+            </a>
+            <div class="sidebar-user-subtitle">{{ (auth$ | async).user?.position }}</div>
+          </div>
+        </div>
+      </div>
+
+      <ul class="sidebar-nav">
+        <li class="sidebar-header">
+          Pages
+        </li>
+
+        <li class="sidebar-item">
+          <a class="sidebar-link" [routerLink]="['/home']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+            <i class="fa-solid fa-home"></i>
+            <span class="align-middle">Home</span>
+          </a>
+        </li>
+        <li class="sidebar-item">
+          <a class="sidebar-link" [routerLink]="['/home/users']" routerLinkActive="active">
+            <i class="fa-solid fa-users"></i>
+            <span class="align-middle">Users</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="main">
+    <nav class="navbar navbar-expand navbar-light navbar-bg">
+      <a class="sidebar-toggle js-sidebar-toggle" (click)="onToggleSidebar();">
+        <i class="hamburger align-self-center"></i>
+      </a>
+
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0" >
+        <li class="nav-item" *ngIf="(auth$ | async).user?.is_admin">
+          <a class="nav-link d-flex flex-column align-items-center justify-content-between" [routerLink]="['/admin']" routerLinkActive="active">
+            <i class="fa-solid fa-user-secret"></i>
+            <span>Admin</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link d-flex flex-column align-items-center justify-content-between" [routerLink]="['/home']" routerLinkActive="active">
+            <i class="fa-solid fa-home"></i>
+            <span>Home</span>
+          </a>
+        </li>
+      </ul>
+
+      <div class="navbar-collapse collapse">
+        <ul class="navbar-nav navbar-align">
+          <li class="nav-item dropdown">
+            <a class="nav-icon dropdown-toggle" href="#" id="alertsDropdown" data-bs-toggle="dropdown">
+              <div class="position-relative">
+                <i-feather class="feather" name="bell"></i-feather>
+                <span class="indicator">4</span>
+              </div>
+            </a>
+            <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end py-0" aria-labelledby="alertsDropdown">
+              <div class="dropdown-menu-header">
+                4 New Notifications
+              </div>
+              <div class="list-group">
+                <a href="#" class="list-group-item">
+                  <div class="row g-0 align-items-center">
+                    <div class="col-2">
+                      <i-feather name="alert-circle" class="text-danger"></i-feather>
+                    </div>
+                    <div class="col-10">
+                      <div class="text-dark">Update completed</div>
+                      <div class="text-muted small mt-1">Restart server 12 to complete the update.</div>
+                      <div class="text-muted small mt-1">30m ago</div>
+                    </div>
+                  </div>
+                </a>
+              </div>
+              <div class="dropdown-menu-footer">
+                <a href="#" class="text-muted">Show all notifications</a>
+              </div>
+            </div>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-icon dropdown-toggle" href="#" id="messagesDropdown" data-bs-toggle="dropdown">
+              <div class="position-relative">
+                <i-feather class="feather" name="message-square"></i-feather>
+              </div>
+            </a>
+            <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end py-0" aria-labelledby="messagesDropdown">
+              <div class="dropdown-menu-header">
+                <div class="position-relative">
+                  4 New Messages
+                </div>
+              </div>
+              <div class="list-group">
+                <a href="#" class="list-group-item">
+                  <div class="row g-0 align-items-center">
+                    <div class="col-2">
+                      <img src="/assets/avatar.png" class="avatar img-fluid rounded-circle" alt="Vanessa Tucker">
+                    </div>
+                    <div class="col-10 ps-2">
+                      <div class="text-dark">Vanessa Tucker</div>
+                      <div class="text-muted small mt-1">Nam pretium turpis et arcu. Duis arcu tortor.</div>
+                      <div class="text-muted small mt-1">15m ago</div>
+                    </div>
+                  </div>
+                </a>
+              </div>
+              <div class="dropdown-menu-footer">
+                <a href="#" class="text-muted">Show all messages</a>
+              </div>
+            </div>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link" href="#" data-bs-toggle="dropdown">
+              <img src="/assets/avatar.png" class="avatar img-fluid rounded me-1" />
+            </a>
+            <div class="dropdown-menu dropdown-menu-end">
+              <a class="dropdown-item" [routerLink]="['/home/profile']">
+                <i-feather class="feather" name="user"></i-feather>
+                Profile
+              </a>
+              <button class="dropdown-item" (click)="onLogout();">
+                <i-feather class="feather" name="log-out"></i-feather>
+                Log out
+              </button>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <main class="content">
+      <div class="container-fluid p-0">
+
+        <!-- <div>Name: {{ (auth$ | async).user?.first_name }}</div>
+        <div>Username: {{ (auth$ | async).user?.username }}</div> -->
+        <router-outlet></router-outlet>
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container-fluid">
+        <div class="row text-muted">
+          <div class="col-6 text-start">
+            <p class="mb-0">
+              <span class="text-muted"><strong>{{ appConfig.APP_NAME }}</strong></span> •
+              <span class="text-muted"><strong>{{ appConfig.APP_VERSION }}</strong></span> •
+              <span class="text-muted"><strong>{{ appConfig.APP_UPDATE }}</strong></span>
+            </p>
+          </div>
+          <div class="col-6 text-end">
+            <ul class="list-inline">
+              <li class="list-inline-item">
+                <a class="text-muted">Support</a>
+              </li>
+              <li class="list-inline-item">
+                <a class="text-muted">Help Center</a>
+              </li>
+              <li class="list-inline-item">
+                <a class="text-muted">Privacy</a>
+              </li>
+              <li class="list-inline-item">
+                <a class="text-muted">Terms</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </div>
+</div>
+
+<app-app-loading [isInitalLoading]="isInitalLoading" [isSuccess]="isSuccess"></app-app-loading>

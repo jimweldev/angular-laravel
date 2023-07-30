@@ -1,0 +1,96 @@
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="h3 mb-0">
+    <i class="fa-solid fa-envelope-circle-check"></i>
+    Mail Logs
+  </h1>
+
+  <div>
+    <button class="btn btn-light btn-sm ms-2" (click)="onRefresh('mailLogsPaginate')" [disabled]="mailLogsPaginate.isGetLoading">
+      <span *ngIf="!mailLogsPaginate.isGetLoading">
+        <i class="fa-solid fa-spinner me-1"></i>
+      </span>
+      <span *ngIf="mailLogsPaginate.isGetLoading">
+        <i class="fa-solid fa-circle-notch spin me-1"></i>
+      </span>
+      Refresh
+    </button>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-body">
+    <div class="d-flex justify-content-between align-items-center mb-3 flex-column flex-sm-row gap-2">
+      <div class="d-flex justify-content-between align-items-center">
+        <span>Show:&nbsp;</span>
+        <select class="form-control form-control-sm" [(ngModel)]="mailLogsPaginate.limit" (change)="mailLogsPaginate.page = 1; onRefresh('mailLogsPaginate')">
+          <option value="10">10</option>
+          <option value="25">25</option>
+          <option value="50">50</option>
+          <option value="100">100</option>
+        </select>
+        <span>&nbsp;entries</span>
+      </div>
+
+      <div class="d-flex justify-content-between align-items-center">
+        <span>Search:&nbsp;</span>
+        <input class="form-control form-control-sm" type="text" [(ngModel)]="mailLogsPaginate.search" (input)="onInputSearch('mailLogsPaginate')">
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-striped table-hover table-sm">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Recipient</th>
+            <th>Recipient Email</th>
+            <th>Sender</th>
+            <th>Sender Email</th>
+            <th>Subject</th>
+            <th>Link</th>
+            <th>Is Sent</th>
+            <th>Is Opened</th>
+            <th>Created At</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let mailLog of mailLogsPaginate.records;">
+            <td>{{ mailLog.id }}</td>
+            <td>{{ mailLog.recipient }}</td>
+            <td>{{ mailLog.recipient_email }}</td>
+            <td>{{ mailLog.sender }}</td>
+            <td>{{ mailLog.sender_email }}</td>
+            <td>{{ mailLog.subject }}</td>
+            <td>{{ mailLog.link }}</td>
+            <td>{{ mailLog.is_sent }}</td>
+            <td>{{ mailLog.is_opened }}</td>
+            <td>{{ mailLog.created_at | date: 'MMMM dd, y hh:mm:ss a' }}</td>
+          </tr>
+          <tr *ngIf="mailLogsPaginate.records.length === 0">
+            <td class="text-center" colspan="100%">No records to show.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center flex-column flex-sm-row gap-2">
+      <p class="mb-0">
+        Showing {{ mailLogsPaginate.records.length > 0 ? (mailLogsPaginate.page - 1) * mailLogsPaginate.limit + 1 : 0 }} 
+        to {{ (mailLogsPaginate.page - 1) * mailLogsPaginate.limit + mailLogsPaginate.records.length }}
+        of {{ mailLogsPaginate.totalRecords }}
+      </p>
+      
+      <ngb-pagination
+        [(page)]="mailLogsPaginate.page"
+        [pageSize]="mailLogsPaginate.totalPages"
+        [collectionSize]="mailLogsPaginate.totalPages"
+        (pageChange)="onRefresh('mailLogsPaginate')"
+        [maxSize]="3"
+        [rotate]="true"
+        size="sm mb-0"
+      ></ngb-pagination>
+    </div>
+
+    <app-table-loading [isLoading]="mailLogsPaginate.isGetLoading"></app-table-loading>
+  </div>
+</div>

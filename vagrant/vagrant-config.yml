@@ -1,0 +1,29 @@
+# Guest OS timezone
+timezone: UTC
+
+# Are we need check box updates for every 'vagrant up'?
+box_check_update: false
+
+# Virtual machine name
+machine_name: angular-template
+
+# assign accessible domain name in browser
+domain: angular-template.com
+
+# Virtual machine IP
+ip: 192.168.77.10
+
+# Virtual machine CPU cores number
+cpus: 1
+
+# Virtual machine RAM
+memory: 512
+
+# Database Name
+dbname: angular_template
+
+# Database Password
+dbpassword: root
+
+# Ubuntu OS Version
+os: ubuntu-20.04

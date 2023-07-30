@@ -1,0 +1,17 @@
+<div class="vh-100 d-flex justify-content-center align-items-center bg-dark" *ngIf="isInitalLoading">
+  <div class="d-flex justify-content-center align-items-center flex-column">
+    <div class="spinner-border text-light m-3" style="width: 5rem; height: 5rem;" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <h3 class="text-light">Loading...</h3>
+  </div>
+</div>
+
+<div class="vh-100 d-flex justify-content-center align-items-center bg-dark" *ngIf="!isInitalLoading && !isSuccess">
+  <div class="d-flex justify-content-center align-items-center flex-column">
+    <div class="spinner-border text-light m-3" style="width: 5rem; height: 5rem;" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <h3 class="text-light">Error...</h3>
+  </div>
+</div>

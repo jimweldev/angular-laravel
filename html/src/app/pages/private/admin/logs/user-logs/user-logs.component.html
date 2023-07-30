@@ -1,0 +1,86 @@
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="h3 mb-0">
+    <i class="fa-solid fa-boxes-packing"></i>
+    User Logs
+  </h1>
+
+  <div>
+    <button class="btn btn-light btn-sm ms-2" (click)="onRefresh('userLogsPaginate')" [disabled]="userLogsPaginate.isGetLoading">
+      <span *ngIf="!userLogsPaginate.isGetLoading">
+        <i class="fa-solid fa-spinner me-1"></i>
+      </span>
+      <span *ngIf="userLogsPaginate.isGetLoading">
+        <i class="fa-solid fa-circle-notch spin me-1"></i>
+      </span>
+      Refresh
+    </button>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-body">
+    <div class="d-flex justify-content-between align-items-center mb-3 flex-column flex-sm-row gap-2">
+      <div class="d-flex justify-content-between align-items-center">
+        <span>Show:&nbsp;</span>
+        <select class="form-control form-control-sm" [(ngModel)]="userLogsPaginate.limit" (change)="userLogsPaginate.page = 1; onRefresh('userLogsPaginate')">
+          <option value="10">10</option>
+          <option value="25">25</option>
+          <option value="50">50</option>
+          <option value="100">100</option>
+        </select>
+        <span>&nbsp;entries</span>
+      </div>
+
+      <div class="d-flex justify-content-between align-items-center">
+        <span>Search:&nbsp;</span>
+        <input class="form-control form-control-sm" type="text" [(ngModel)]="userLogsPaginate.search" (input)="onInputSearch('userLogsPaginate')">
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-striped table-hover table-sm">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>User ID</th>
+            <th>Activity</th>
+            <th>Notes</th>
+            <th>Created At</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let userLog of userLogsPaginate.records;">
+            <td>{{ userLog.id }}</td>
+            <td>{{ userLog.user_id }}</td>
+            <td>{{ userLog.activity }}</td>
+            <td>{{ userLog.notes }}</td>
+            <td>{{ userLog.created_at | date: 'MMMM dd, y hh:mm:ss a' }}</td>
+          </tr>
+          <tr *ngIf="userLogsPaginate.records.length === 0">
+            <td class="text-center" colspan="100%">No records to show.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center flex-column flex-sm-row gap-2">
+      <p class="mb-0">
+        Showing {{ userLogsPaginate.records.length > 0 ? (userLogsPaginate.page - 1) * userLogsPaginate.limit + 1 : 0 }} 
+        to {{ (userLogsPaginate.page - 1) * userLogsPaginate.limit + userLogsPaginate.records.length }}
+        of {{ userLogsPaginate.totalRecords }}
+      </p>
+      
+      <ngb-pagination
+        [(page)]="userLogsPaginate.page"
+        [pageSize]="userLogsPaginate.totalPages"
+        [collectionSize]="userLogsPaginate.totalPages"
+        (pageChange)="onRefresh('userLogsPaginate')"
+        [maxSize]="3"
+        [rotate]="true"
+        size="sm mb-0"
+      ></ngb-pagination>
+    </div>
+
+    <app-table-loading [isLoading]="userLogsPaginate.isGetLoading"></app-table-loading>
+  </div>
+</div>

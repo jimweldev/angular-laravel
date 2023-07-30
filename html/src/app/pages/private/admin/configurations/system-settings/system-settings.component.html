@@ -1,0 +1,242 @@
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="h3 mb-0">
+    <i class="fa-solid fa-sliders"></i>
+    System Settings
+  </h1>
+
+  <div>
+    <button class="btn btn-primary btn-sm ms-2" data-bs-toggle="modal" data-bs-target="#addSystemSettingModal">
+      <i class="fa-solid fa-plus me-1"></i>
+      Add
+    </button>
+    <button class="btn btn-light btn-sm ms-2" (click)="onRefresh('systemSettingsPaginate')" [disabled]="systemSettingsPaginate.isGetLoading">
+      <span *ngIf="!systemSettingsPaginate.isGetLoading">
+        <i class="fa-solid fa-spinner me-1"></i>
+      </span>
+      <span *ngIf="systemSettingsPaginate.isGetLoading">
+        <i class="fa-solid fa-circle-notch spin me-1"></i>
+      </span>
+      Refresh
+    </button>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-body">
+    <div class="d-flex justify-content-between align-items-center mb-3 flex-column flex-sm-row gap-2">
+      <div class="d-flex justify-content-between align-items-center">
+        <span>Show:&nbsp;</span>
+        <select class="form-control form-control-sm" [(ngModel)]="systemSettingsPaginate.limit" (change)="systemSettingsPaginate.page = 1; onRefresh('systemSettingsPaginate')">
+          <option value="10">10</option>
+          <option value="25">25</option>
+          <option value="50">50</option>
+          <option value="100">100</option>
+        </select>
+        <span>&nbsp;entries</span>
+      </div>
+
+      <div class="d-flex justify-content-between align-items-center">
+        <span>Search:&nbsp;</span>
+        <input class="form-control form-control-sm" type="text" [(ngModel)]="systemSettingsPaginate.search" (input)="onInputSearch('systemSettingsPaginate')">
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-striped table-hover table-sm">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Value</th>
+            <th>Type</th>
+            <th>Notes</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let systemSetting of systemSettingsPaginate.records;">
+            <td>{{ systemSetting.id }}</td>
+            <td>{{ systemSetting.name }}</td>
+            <td>{{ systemSetting.value }}</td>
+            <td>{{ systemSetting.type }}</td>
+            <td>{{ systemSetting.notes }}</td>
+            <td>
+              <div class="btn-group btn-group-sm">
+                <button class="btn btn-info" (click)="onEdit('systemSettings', systemSetting)" data-bs-toggle="modal" data-bs-target="#updateUserModal">
+                  <i class="fa-solid fa-pen-to-square"></i>
+                </button>
+                <button class="btn btn-danger" (click)="onDelete('systemSettings', systemSetting)">
+                  <i class="fa-solid fa-trash-can"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+          <tr *ngIf="systemSettingsPaginate.records.length === 0">
+            <td class="text-center" colspan="100%">No records to show.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center flex-column flex-sm-row gap-2">
+      <p class="mb-0">
+        Showing {{ systemSettingsPaginate.records.length > 0 ? (systemSettingsPaginate.page - 1) * systemSettingsPaginate.limit + 1 : 0 }} 
+        to {{ (systemSettingsPaginate.page - 1) * systemSettingsPaginate.limit + systemSettingsPaginate.records.length }}
+        of {{ systemSettingsPaginate.totalRecords }}
+      </p>
+      
+      <ngb-pagination
+        [(page)]="systemSettingsPaginate.page"
+        [pageSize]="systemSettingsPaginate.totalPages"
+        [collectionSize]="systemSettingsPaginate.totalPages"
+        (pageChange)="onRefresh('systemSettingsPaginate')"
+        [maxSize]="3"
+        [rotate]="true"
+        size="sm mb-0"
+      ></ngb-pagination>
+    </div>
+
+    <app-table-loading [isLoading]="systemSettingsPaginate.isGetLoading"></app-table-loading>
+  </div>
+</div>
+
+<!-- Modal -->
+<!-- CREATE -->
+<form class="modal fade" id="addSystemSettingModal" tabindex="-1" data-bs-backdrop="static" [formGroup]="systemSettingPostForm" (ngSubmit)="onSubmit('systemSettings');">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5">
+          <i class="fa-solid fa-plus me-1"></i>
+          Add System Setting
+        </h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label>Name</label>
+          <input class="form-control {{ systemSettingPostForm.controls['name']['errors'] && systemSettingPostForm.controls['name']['touched'] && 'invalid' }}" type="text" formControlName="name">
+          <div class="text-danger" *ngIf="systemSettingPostForm.controls['name']['errors'] && systemSettingPostForm.controls['name']['touched']">
+            <span *ngIf="systemSettingPostForm.controls['name']['errors']['required']">
+              Name is required.
+            </span>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label>Value</label>
+          <input class="form-control {{ systemSettingPostForm.controls['value']['errors'] && systemSettingPostForm.controls['value']['touched'] && 'invalid' }}" type="text" formControlName="value">
+          <div class="text-danger" *ngIf="systemSettingPostForm.controls['value']['errors'] && systemSettingPostForm.controls['value']['touched']">
+            <span *ngIf="systemSettingPostForm.controls['value']['errors']['required']">
+              Value is required.
+            </span>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label>Type</label>
+          <input class="form-control {{ systemSettingPostForm.controls['type']['errors'] && systemSettingPostForm.controls['type']['touched'] && 'invalid' }}" type="text" formControlName="type">
+          <div class="text-danger" *ngIf="systemSettingPostForm.controls['type']['errors'] && systemSettingPostForm.controls['type']['touched']">
+            <span *ngIf="systemSettingPostForm.controls['type']['errors']['required']">
+              Type is required.
+            </span>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label>Notes</label>
+          <input class="form-control {{ systemSettingPostForm.controls['notes']['errors'] && systemSettingPostForm.controls['notes']['touched'] && 'invalid' }}" type="text" formControlName="notes">
+          <div class="text-danger" *ngIf="systemSettingPostForm.controls['notes']['errors'] && systemSettingPostForm.controls['notes']['touched']">
+            <span *ngIf="systemSettingPostForm.controls['notes']['errors']['required']">
+              Notes is required.
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-success" [disabled]="systemSettingPostForm.invalid || systemSettingsPaginate.isPostLoading">
+          <span *ngIf="!systemSettingsPaginate.isPostLoading">
+            <i class="fa-solid fa-save me-1"></i>
+          </span>
+          <span *ngIf="systemSettingsPaginate.isPostLoading">
+            <i class="fa-solid fa-circle-notch spin me-1"></i>
+          </span>
+          Save
+        </button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" tabindex="-1">
+          <i class="fa-solid fa-close me-1"></i>
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</form>
+
+<!-- UPDATE -->
+<form class="modal fade" id="updateUserModal" tabindex="-1" data-bs-backdrop="static" [formGroup]="systemSettingPutForm" (ngSubmit)="onUpdate('systemSettings');">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5">
+          <i class="fa-solid fa-pen-to-square me-1"></i>
+          Edit System Setting
+        </h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label>ID</label>
+          <input class="form-control" type="text" formControlName="id" readonly>
+        </div>
+        <div class="mb-3">
+          <label>Name</label>
+          <input class="form-control {{ systemSettingPutForm.controls['name']['errors'] && systemSettingPutForm.controls['name']['touched'] && 'invalid' }}" type="text" formControlName="name">
+          <div class="text-danger" *ngIf="systemSettingPutForm.controls['name']['errors'] && systemSettingPutForm.controls['name']['touched']">
+            <span *ngIf="systemSettingPutForm.controls['name']['errors']['required']">
+              Name is required.
+            </span>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label>Value</label>
+          <input class="form-control {{ systemSettingPutForm.controls['value']['errors'] && systemSettingPutForm.controls['value']['touched'] && 'invalid' }}" type="text" formControlName="value">
+          <div class="text-danger" *ngIf="systemSettingPutForm.controls['value']['errors'] && systemSettingPutForm.controls['value']['touched']">
+            <span *ngIf="systemSettingPutForm.controls['value']['errors']['required']">
+              Value is required.
+            </span>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label>Type</label>
+          <input class="form-control {{ systemSettingPutForm.controls['type']['errors'] && systemSettingPutForm.controls['type']['touched'] && 'invalid' }}" type="text" formControlName="type">
+          <div class="text-danger" *ngIf="systemSettingPutForm.controls['type']['errors'] && systemSettingPutForm.controls['type']['touched']">
+            <span *ngIf="systemSettingPutForm.controls['type']['errors']['required']">
+              Type is required.
+            </span>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label>Notes</label>
+          <input class="form-control {{ systemSettingPutForm.controls['notes']['errors'] && systemSettingPutForm.controls['notes']['touched'] && 'invalid' }}" type="text" formControlName="notes">
+          <div class="text-danger" *ngIf="systemSettingPutForm.controls['notes']['errors'] && systemSettingPutForm.controls['notes']['touched']">
+            <span *ngIf="systemSettingPutForm.controls['notes']['errors']['required']">
+              Notes is required.
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-success" [disabled]="systemSettingPutForm.invalid || systemSettingsPaginate.isPutLoading">
+          <span *ngIf="!systemSettingsPaginate.isPutLoading">
+            <i class="fa-solid fa-save me-1"></i>
+          </span>
+          <span *ngIf="systemSettingsPaginate.isPutLoading">
+            <i class="fa-solid fa-circle-notch spin me-1"></i>
+          </span>
+          Update
+        </button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" tabindex="-1">
+          <i class="fa-solid fa-close me-1"></i>
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</form>

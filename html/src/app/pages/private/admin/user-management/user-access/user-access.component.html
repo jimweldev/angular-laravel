@@ -1,0 +1,769 @@
+<h1 class="h3 mb-3">
+  <i class="fa-solid fa-fingerprint"></i>
+  User Access
+</h1>
+
+<div class="card">
+  <div class="card-header">
+    <ul class="nav nav-tabs" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#user-roles-tab-pane" type="button" role="tab">
+          <i class="fa-solid fa-user-tie"></i>
+          User Roles
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#roles-tab-pane" type="button" role="tab">
+          <i class="fa-solid fa-screwdriver-wrench"></i>
+          Roles
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#permissions-tab-pane" type="button" role="tab">
+          <i class="fa-solid fa-user-shield"></i>
+          Permissions
+        </button>
+      </li>
+    </ul>
+  </div>
+  <div class="card-body">
+    <div class="tab-content">
+      <div class="tab-pane fade show active" id="user-roles-tab-pane" role="tabpanel" tabindex="0">
+        <div class="d-flex justify-content-end mb-3">
+          <button class="btn btn-primary btn-sm ms-2" data-bs-toggle="modal" data-bs-target="#addUserRoleModal">
+            <i class="fa-solid fa-plus me-1"></i>
+            Add
+          </button>
+          <button class="btn btn-light btn-sm ms-2" (click)="onRefresh('userRolesPaginate')" [disabled]="userRolesPaginate.isGetLoading">
+            <span *ngIf="!userRolesPaginate.isGetLoading">
+              <i class="fa-solid fa-spinner me-1"></i>
+            </span>
+            <span *ngIf="userRolesPaginate.isGetLoading">
+              <i class="fa-solid fa-circle-notch spin me-1"></i>
+            </span>
+            Refresh
+          </button>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mb-3 flex-column flex-sm-row gap-2">
+          <div class="d-flex justify-content-between align-items-center">
+            <span>Show:&nbsp;</span>
+            <select class="form-control form-control-sm" [(ngModel)]="userRolesPaginate.limit" (change)="userRolesPaginate.page = 1; onRefresh('userRolesPaginate')">
+              <option value="10">10</option>
+              <option value="25">25</option>
+              <option value="50">50</option>
+              <option value="100">100</option>
+            </select>
+            <span>&nbsp;entries</span>
+          </div>
+    
+          <div class="d-flex justify-content-between align-items-center">
+            <span>Search:&nbsp;</span>
+            <input class="form-control form-control-sm" type="text" [(ngModel)]="userRolesPaginate.search" (input)="onInputSearch('userRolesPaginate')">
+          </div>
+        </div>
+    
+        <div class="table-responsive">
+          <table class="table table-striped table-hover table-sm">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>User</th>
+                <th>Role</th>
+                <th>Created By</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let user of userRolesPaginate.records;">
+                <td>{{ user.id }}</td>
+                <td>{{ user.user.first_name + ' ' + user.user.last_name }}</td>
+                <td>{{ user.role.name }}</td>
+                <td>{{ user.creator.full_name }}</td>
+                <td>
+                  <div class="btn-group btn-group-sm">
+                    <button class="btn btn-info" (click)="onEdit('userRoles', user)" data-bs-toggle="modal" data-bs-target="#editUserRoleModal">
+                      <i class="fa-solid fa-pen-to-square"></i>
+                    </button>
+                    <button class="btn btn-danger" (click)="onDelete('userRoles', user)">
+                      <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr *ngIf="userRolesPaginate.records.length === 0">
+                <td class="text-center" colspan="100%">No records to show.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+    
+        <div class="d-flex justify-content-between align-items-center flex-column flex-sm-row gap-2">
+          <p class="mb-0">
+            Showing {{ userRolesPaginate.records.length > 0 ? (userRolesPaginate.page - 1) * userRolesPaginate.limit + 1 : 0 }} 
+            to {{ (userRolesPaginate.page - 1) * userRolesPaginate.limit + userRolesPaginate.records.length }}
+            of {{ userRolesPaginate.totalRecords }}
+          </p>
+          
+          <ngb-pagination
+            [(page)]="userRolesPaginate.page"
+            [pageSize]="userRolesPaginate.totalPages"
+            [collectionSize]="userRolesPaginate.totalPages"
+            (pageChange)="onRefresh('userRolesPaginate')"
+            [maxSize]="3"
+            [rotate]="true"
+            size="sm mb-0"
+          ></ngb-pagination>
+        </div>
+
+        <app-table-loading [isLoading]="userRolesPaginate.isGetLoading"></app-table-loading>
+      </div>
+      <div class="tab-pane fade" id="roles-tab-pane" role="tabpanel" tabindex="0">
+        <div class="d-flex justify-content-end mb-3">
+          <button class="btn btn-primary btn-sm ms-2" data-bs-toggle="modal" data-bs-target="#addRoleModal">
+            <i class="fa-solid fa-plus me-1"></i>
+            Add
+          </button>
+          <button class="btn btn-light btn-sm ms-2" (click)="onRefresh('rolesPaginate')" [disabled]="rolesPaginate.isGetLoading">
+            <span *ngIf="!rolesPaginate.isGetLoading">
+              <i class="fa-solid fa-spinner me-1"></i>
+            </span>
+            <span *ngIf="rolesPaginate.isGetLoading">
+              <i class="fa-solid fa-circle-notch spin me-1"></i>
+            </span>
+            Refresh
+          </button>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mb-3 flex-column flex-sm-row gap-2">
+          <div class="d-flex justify-content-between align-items-center">
+            <span>Show:&nbsp;</span>
+            <select class="form-control form-control-sm" [(ngModel)]="rolesPaginate.limit" (change)="rolesPaginate.page = 1; onRefresh('rolesPaginate')">
+              <option value="10">10</option>
+              <option value="25">25</option>
+              <option value="50">50</option>
+              <option value="100">100</option>
+            </select>
+            <span>&nbsp;entries</span>
+          </div>
+    
+          <div class="d-flex justify-content-between align-items-center">
+            <span>Search:&nbsp;</span>
+            <input class="form-control form-control-sm" type="text" [(ngModel)]="rolesPaginate.search" (input)="onInputSearch('rolesPaginate')">
+          </div>
+        </div>
+    
+        <div class="table-responsive">
+          <table class="table table-striped table-hover table-sm">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Created By</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let user of rolesPaginate.records;">
+                <td>{{ user.id }}</td>
+                <td>{{ user.name }}</td>
+                <td>{{ user.creator?.full_name }}</td>
+                <td>
+                  <div class="btn-group btn-group-sm">
+                    <button class="btn btn-warning" (click)="onEdit('rolePermissions', user)" data-bs-toggle="modal" data-bs-target="#addRolePermissionModal">
+                      <i class="fa-solid fa-user-shield"></i>
+                    </button>
+                    <button class="btn btn-info" (click)="onEdit('roles', user)" data-bs-toggle="modal" data-bs-target="#editRoleModal">
+                      <i class="fa-solid fa-pen-to-square"></i>
+                    </button>
+                    <button class="btn btn-danger" (click)="onDelete('roles', user)">
+                      <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr *ngIf="rolesPaginate.records.length === 0">
+                <td class="text-center" colspan="100%">No records to show.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+    
+        <div class="d-flex justify-content-between align-items-center flex-column flex-sm-row gap-2">
+          <p class="mb-0">
+            Showing {{ rolesPaginate.records.length > 0 ? (rolesPaginate.page - 1) * rolesPaginate.limit + 1 : 0 }} 
+            to {{ (rolesPaginate.page - 1) * rolesPaginate.limit + rolesPaginate.records.length }}
+            of {{ rolesPaginate.totalRecords }}
+          </p>
+          
+          <ngb-pagination
+            [(page)]="rolesPaginate.page"
+            [pageSize]="rolesPaginate.totalPages"
+            [collectionSize]="rolesPaginate.totalPages"
+            (pageChange)="onRefresh('rolesPaginate')"
+            [maxSize]="3"
+            [rotate]="true"
+            size="sm mb-0"
+          ></ngb-pagination>
+        </div>
+    
+        <app-table-loading [isLoading]="rolesPaginate.isGetLoading"></app-table-loading>
+      </div>
+      <div class="tab-pane fade" id="permissions-tab-pane" role="tabpanel" tabindex="0">
+        <div class="d-flex justify-content-end mb-3">
+          <button class="btn btn-primary btn-sm ms-2" data-bs-toggle="modal" data-bs-target="#addPermissionModal">
+            <i class="fa-solid fa-plus me-1"></i>
+            Add
+          </button>
+          <button class="btn btn-light btn-sm ms-2" (click)="onRefresh('permissionsPaginate')"[disabled]="permissionsPaginate.isGetLoading">
+            <span *ngIf="!permissionsPaginate.isGetLoading">
+              <i class="fa-solid fa-spinner me-1"></i>
+            </span>
+            <span *ngIf="permissionsPaginate.isGetLoading">
+              <i class="fa-solid fa-circle-notch spin me-1"></i>
+            </span>
+            Refresh
+          </button>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mb-3 flex-column flex-sm-row gap-2">
+          <div class="d-flex justify-content-between align-items-center">
+            <span>Show:&nbsp;</span>
+            <select class="form-control form-control-sm" [(ngModel)]="permissionsPaginate.limit" (change)="permissionsPaginate.page = 1; onRefresh('permissionsPaginate')">
+              <option value="10">10</option>
+              <option value="25">25</option>
+              <option value="50">50</option>
+              <option value="100">100</option>
+            </select>
+            <span>&nbsp;entries</span>
+          </div>
+    
+          <div class="d-flex justify-content-between align-items-center">
+            <span>Search:&nbsp;</span>
+            <input class="form-control form-control-sm" type="text" [(ngModel)]="permissionsPaginate.search" (input)="onInputSearch('permissionsPaginate')">
+          </div>
+        </div>
+    
+        <div class="table-responsive">
+          <table class="table table-striped table-hover table-sm">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Controller</th>
+                <th>Function Name</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let user of permissionsPaginate.records;">
+                <td>{{ user.id }}</td>
+                <td>{{ user.name }}</td>
+                <td>{{ user.controller }}</td>
+                <td>{{ user.function_name }}</td>
+                <td>
+                  <div class="btn-group btn-group-sm">
+                    <button class="btn btn-info" (click)="onEdit('permissions', user)" data-bs-toggle="modal" data-bs-target="#editPermissionModal">
+                      <i class="fa-solid fa-pen-to-square"></i>
+                    </button>
+                    <button class="btn btn-danger" (click)="onDelete('permissions', user)">
+                      <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr *ngIf="permissionsPaginate.records.length === 0">
+                <td class="text-center" colspan="100%">No records to show.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+    
+        <div class="d-flex justify-content-between align-items-center flex-column flex-sm-row gap-2">
+          <p class="mb-0">
+            Showing {{ permissionsPaginate.records.length > 0 ? (permissionsPaginate.page - 1) * permissionsPaginate.limit + 1 : 0 }} 
+            to {{ (permissionsPaginate.page - 1) * permissionsPaginate.limit + permissionsPaginate.records.length }}
+            of {{ permissionsPaginate.totalRecords }}
+          </p>
+          
+          <ngb-pagination
+            [(page)]="permissionsPaginate.page"
+            [pageSize]="permissionsPaginate.totalPages"
+            [collectionSize]="permissionsPaginate.totalPages"
+            (pageChange)="onRefresh('permissionsPaginate')"
+            [maxSize]="3"
+            [rotate]="true"
+            size="sm mb-0"
+          ></ngb-pagination>
+        </div>
+    
+        <app-table-loading [isLoading]="permissionsPaginate.isGetLoading"></app-table-loading>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<!-- USER ROLES [CREATE] -->
+<form class="modal fade" id="addUserRoleModal" tabindex="-1" data-bs-backdrop="static" [formGroup]="userRolePostForm" (ngSubmit)="onSubmit('userRoles');">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5">
+          <i class="fa-solid fa-plus me-1"></i>
+          Add User Role
+        </h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label>User</label>
+          <div class="input-group">
+            <ng-select
+              formControlName="user_id"
+              placeholder="Select User"
+              [readonly]="userList.isLoading"
+            >
+              <ng-option *ngFor="let user of userList.records" [value]="user.id">{{ user.first_name + ' ' + user.last_name }}</ng-option>
+            </ng-select>
+            <button class="input-group-text" (click)="onRefresh('userList')" [disabled]="userList.isLoading">
+              <span *ngIf="!userList.isLoading">
+                <i class="fa-solid fa-spinner"></i>
+              </span>
+              <span *ngIf="userList.isLoading">
+                <i class="fa-solid fa-circle-notch spin"></i>
+              </span>
+            </button>
+          </div>
+          <div class="text-danger" *ngIf="userRolePostForm.controls['user_id']['errors'] && userRolePostForm.controls['user_id']['touched']">
+            <span *ngIf="userRolePostForm.controls['user_id']['errors']['required']">
+              User is required.
+            </span>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label>Role</label>
+          <div class="input-group">
+            <ng-select
+              formControlName="role_id"
+              placeholder="Select Role"
+              [readonly]="roleList.isLoading"
+            >
+              <ng-option *ngFor="let role of roleList.records" [value]="role.id">{{ role.name }}</ng-option>
+            </ng-select>
+            <button class="input-group-text" (click)="onRefresh('roleList')" [disabled]="roleList.isLoading">
+              <span *ngIf="!roleList.isLoading">
+                <i class="fa-solid fa-spinner"></i>
+              </span>
+              <span *ngIf="roleList.isLoading">
+                <i class="fa-solid fa-circle-notch spin"></i>
+              </span>
+            </button>
+          </div>
+          <div class="text-danger" *ngIf="userRolePostForm.controls['role_id']['errors'] && userRolePostForm.controls['role_id']['touched']">
+            <span *ngIf="userRolePostForm.controls['role_id']['errors']['required']">
+              Role is required.
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-success" [disabled]="userRolePostForm.invalid || userRolesPaginate.isPostLoading">
+          <span *ngIf="!userRolesPaginate.isPostLoading">
+            <i class="fa-solid fa-save me-1"></i>
+          </span>
+          <span *ngIf="userRolesPaginate.isPostLoading">
+            <i class="fa-solid fa-circle-notch spin me-1"></i>
+          </span>
+          Save
+        </button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" tabindex="-1">
+          <i class="fa-solid fa-close me-1"></i>
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</form>
+
+<!-- USER ROLES [EDIT] -->
+<form class="modal fade" id="editUserRoleModal" tabindex="-1" data-bs-backdrop="static" [formGroup]="userRolePutForm" (ngSubmit)="onUpdate('userRoles');">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5">
+          <i class="fa-solid fa-pen-to-square me-1"></i>
+          Edit User Role
+        </h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label>ID</label>
+          <input class="form-control" type="text" formControlName="id" readonly>
+        </div>
+        <div class="mb-3">
+          <label>User</label>
+          <div class="input-group">
+            <ng-select
+              formControlName="user_id"
+              placeholder="Select User"
+              [readonly]="userList.isLoading"
+            >
+              <ng-option *ngFor="let user of userList.records" [value]="user.id">{{ user.first_name + ' ' + user.last_name }}</ng-option>
+            </ng-select>
+            <button class="input-group-text" (click)="onRefresh('userList')" [disabled]="userList.isLoading">
+              <span *ngIf="!userList.isLoading">
+                <i class="fa-solid fa-spinner"></i>
+              </span>
+              <span *ngIf="userList.isLoading">
+                <i class="fa-solid fa-circle-notch spin"></i>
+              </span>
+            </button>
+          </div>
+          <div class="text-danger" *ngIf="userRolePutForm.controls['user_id']['errors'] && userRolePutForm.controls['user_id']['touched']">
+            <span *ngIf="userRolePutForm.controls['user_id']['errors']['required']">
+              User is required.
+            </span>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label>Role</label>
+          <div class="input-group">
+            <ng-select
+              formControlName="role_id"
+              placeholder="Select Role"
+              [readonly]="roleList.isLoading"
+            >
+              <ng-option *ngFor="let role of roleList.records" [value]="role.id">{{ role.name }}</ng-option>
+            </ng-select>
+            <button class="input-group-text" (click)="onRefresh('roleList')" [disabled]="roleList.isLoading">
+              <span *ngIf="!roleList.isLoading">
+                <i class="fa-solid fa-spinner"></i>
+              </span>
+              <span *ngIf="roleList.isLoading">
+                <i class="fa-solid fa-circle-notch spin"></i>
+              </span>
+            </button>
+          </div>
+          <div class="text-danger" *ngIf="userRolePutForm.controls['role_id']['errors'] && userRolePutForm.controls['role_id']['touched']">
+            <span *ngIf="userRolePutForm.controls['role_id']['errors']['required']">
+              Role is required.
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-success" [disabled]="userRolePutForm.invalid || userRolesPaginate.isPostLoading">
+          <span *ngIf="!userRolesPaginate.isPostLoading">
+            <i class="fa-solid fa-save me-1"></i>
+          </span>
+          <span *ngIf="userRolesPaginate.isPostLoading">
+            <i class="fa-solid fa-circle-notch spin me-1"></i>
+          </span>
+          Save
+        </button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" tabindex="-1">
+          <i class="fa-solid fa-close me-1"></i>
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</form>
+
+<!-- ROLES [CREATE] -->
+<form class="modal fade" id="addRoleModal" tabindex="-1" data-bs-backdrop="static" [formGroup]="rolePostForm" (ngSubmit)="onSubmit('roles');">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5">
+          <i class="fa-solid fa-plus me-1"></i>
+          Add Role
+        </h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label>Name</label>
+          <input class="form-control {{ rolePostForm.controls['name']['errors'] && rolePostForm.controls['name']['touched'] && 'invalid' }}" type="text" formControlName="name">
+          <div class="text-danger" *ngIf="rolePostForm.controls['name']['errors'] && rolePostForm.controls['name']['touched']">
+            <span *ngIf="rolePostForm.controls['name']['errors']['required']">
+              Name is required.
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-success" [disabled]="rolePostForm.invalid || rolesPaginate.isPostLoading">
+          <span *ngIf="!rolesPaginate.isPostLoading">
+            <i class="fa-solid fa-save me-1"></i>
+          </span>
+          <span *ngIf="rolesPaginate.isPostLoading">
+            <i class="fa-solid fa-circle-notch spin me-1"></i>
+          </span>
+          Save
+        </button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" tabindex="-1">
+          <i class="fa-solid fa-close me-1"></i>
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</form>
+
+<!-- ROLES [EDIT] -->
+<form class="modal fade" id="editRoleModal" tabindex="-1" data-bs-backdrop="static" [formGroup]="rolePutForm" (ngSubmit)="onUpdate('roles');">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5">
+          <i class="fa-solid fa-pen-to-square me-1"></i>
+          Edit Role
+        </h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label>ID</label>
+          <input class="form-control" type="text" formControlName="id" readonly>
+        </div>
+        <div class="mb-3">
+          <label>Name</label>
+          <input class="form-control {{ rolePutForm.controls['name']['errors'] && rolePutForm.controls['name']['touched'] && 'invalid' }}" type="text" formControlName="name">
+          <div class="text-danger" *ngIf="rolePutForm.controls['name']['errors'] && rolePutForm.controls['name']['touched']">
+            <span *ngIf="rolePutForm.controls['name']['errors']['required']">
+              Name is required.
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-success" [disabled]="rolePutForm.invalid || rolesPaginate.isPutLoading">
+          <span *ngIf="!rolesPaginate.isPutLoading">
+            <i class="fa-solid fa-save me-1"></i>
+          </span>
+          <span *ngIf="rolesPaginate.isPutLoading">
+            <i class="fa-solid fa-circle-notch spin me-1"></i>
+          </span>
+          Save
+        </button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" tabindex="-1">
+          <i class="fa-solid fa-close me-1"></i>
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</form>
+
+<!-- ROLE PERMISSIONS [CREATE] -->
+<form class="modal fade" id="addRolePermissionModal" tabindex="-1" data-bs-backdrop="static" [formGroup]="rolePermissionPostForm" (ngSubmit)="onSubmit('rolePermissions');">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5">
+          <i class="fa-solid fa-plus me-1"></i>
+          Add Role Permissions
+        </h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label>ID</label>
+          <input class="form-control" type="text" formControlName="role_id" readonly>
+        </div>
+        <div class="mb-3">
+          <label>Name</label>
+          <input class="form-control" type="text" formControlName="name" readonly>
+        </div>
+        <div class="mb-3">
+          <label>Permissions</label>
+          <div class="input-group">
+            <ng-select
+              [multiple]="true"
+              [closeOnSelect]="false"
+              [hideSelected]="true"
+              formControlName="permission_ids"
+              placeholder="Select Permissions"
+              [readonly]="permissionList.isLoading"
+            >
+              <ng-option *ngFor="let permission of permissionList.records" [value]="permission.id">{{permission.name}}</ng-option>
+            </ng-select>
+            <button class="input-group-text" (click)="onRefresh('permissionList')" [disabled]="permissionList.isLoading">
+              <span *ngIf="!permissionList.isLoading">
+                <i class="fa-solid fa-spinner"></i>
+              </span>
+              <span *ngIf="permissionList.isLoading">
+                <i class="fa-solid fa-circle-notch spin"></i>
+              </span>
+            </button>
+          </div>
+          <div class="text-danger" *ngIf="rolePermissionPostForm.controls['permission_ids']['errors'] && rolePermissionPostForm.controls['permission_ids']['touched']">
+            <span *ngIf="rolePermissionPostForm.controls['permission_ids']['errors']['required']">
+              Permissions are required.
+            </span>
+          </div>
+        </div>
+
+        <hr>
+
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Role Permissions</h5>
+
+            <ng-container *ngIf="!rolePermissionList.isLoading">
+              <div class="input-group mb-1" *ngFor="let rolePermission of rolePermissionList.records">
+                <input type="text" class="form-control" [value]="rolePermission.permission.name" readonly>
+                <button class="btn btn-danger" type="button" (click)="onDelete('rolePermissions', rolePermission)">
+                  <i class="fa-solid fa-xmark"></i>
+                </button>
+              </div>
+            </ng-container>
+
+            <input type="text" class="form-control invalid text-center" *ngIf="rolePermissionList.records.length === 0 && !rolePermissionList.isLoading" value="No Role Permissions yet." readonly>
+            <input type="text" class="form-control text-center" *ngIf="rolePermissionList.isLoading" value="Loading..." readonly>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-success" [disabled]="rolePermissionPostForm.invalid || rolePermissionList.isLoading">
+          <span *ngIf="!rolePermissionList.isLoading">
+            <i class="fa-solid fa-save me-1"></i>
+          </span>
+          <span *ngIf="rolePermissionList.isLoading">
+            <i class="fa-solid fa-circle-notch spin me-1"></i>
+          </span>
+          Save
+        </button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" tabindex="-1">
+          <i class="fa-solid fa-close me-1"></i>
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</form>
+
+<!-- PERMISSIONS [CREATE] -->
+<form class="modal fade" id="addPermissionModal" tabindex="-1" data-bs-backdrop="static" [formGroup]="permissionPostForm" (ngSubmit)="onSubmit('permissions');">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5">
+          <i class="fa-solid fa-plus me-1"></i>
+          Add Permission
+        </h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label>Name</label>
+          <input class="form-control {{ permissionPostForm.controls['name']['errors'] && permissionPostForm.controls['name']['touched'] && 'invalid' }}" type="text" formControlName="name">
+          <div class="text-danger" *ngIf="permissionPostForm.controls['name']['errors'] && permissionPostForm.controls['name']['touched']">
+            <span *ngIf="permissionPostForm.controls['name']['errors']['required']">
+              Name is required.
+            </span>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label>Controller</label>
+          <input class="form-control {{ permissionPostForm.controls['controller']['errors'] && permissionPostForm.controls['controller']['touched'] && 'invalid' }}" type="text" formControlName="controller">
+          <div class="text-danger" *ngIf="permissionPostForm.controls['controller']['errors'] && permissionPostForm.controls['controller']['touched']">
+            <span *ngIf="permissionPostForm.controls['controller']['errors']['required']">
+              Controller is required.
+            </span>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label>Function Name</label>
+          <input class="form-control {{ permissionPostForm.controls['function_name']['errors'] && permissionPostForm.controls['function_name']['touched'] && 'invalid' }}" type="text" formControlName="function_name">
+          <div class="text-danger" *ngIf="permissionPostForm.controls['function_name']['errors'] && permissionPostForm.controls['function_name']['touched']">
+            <span *ngIf="permissionPostForm.controls['function_name']['errors']['required']">
+              Function Name is required.
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-success" [disabled]="permissionPostForm.invalid || permissionsPaginate.isPostLoading">
+          <span *ngIf="!permissionsPaginate.isPostLoading">
+            <i class="fa-solid fa-save me-1"></i>
+          </span>
+          <span *ngIf="permissionsPaginate.isPostLoading">
+            <i class="fa-solid fa-circle-notch spin me-1"></i>
+          </span>
+          Save
+        </button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" tabindex="-1">
+          <i class="fa-solid fa-close me-1"></i>
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</form>
+
+<!-- PERMISSIONS [EDIT] -->
+<form class="modal fade" id="editPermissionModal" tabindex="-1" data-bs-backdrop="static" [formGroup]="permissionPutForm" (ngSubmit)="onUpdate('permissions');">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5">
+          <i class="fa-solid fa-pen-to-square me-1"></i>
+          Edit Permission
+        </h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label>ID</label>
+          <input class="form-control" type="text" formControlName="id" readonly>
+        </div>
+        <div class="mb-3">
+          <label>Name</label>
+          <input class="form-control {{ permissionPutForm.controls['name']['errors'] && permissionPutForm.controls['name']['touched'] && 'invalid' }}" type="text" formControlName="name">
+          <div class="text-danger" *ngIf="permissionPutForm.controls['name']['errors'] && permissionPutForm.controls['name']['touched']">
+            <span *ngIf="permissionPutForm.controls['name']['errors']['required']">
+              Name is required.
+            </span>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label>Controller</label>
+          <input class="form-control {{ permissionPutForm.controls['controller']['errors'] && permissionPutForm.controls['controller']['touched'] && 'invalid' }}" type="text" formControlName="controller">
+          <div class="text-danger" *ngIf="permissionPutForm.controls['controller']['errors'] && permissionPutForm.controls['controller']['touched']">
+            <span *ngIf="permissionPutForm.controls['controller']['errors']['required']">
+              Controller is required.
+            </span>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label>Function Name</label>
+          <input class="form-control {{ permissionPutForm.controls['function_name']['errors'] && permissionPutForm.controls['function_name']['touched'] && 'invalid' }}" type="text" formControlName="function_name">
+          <div class="text-danger" *ngIf="permissionPutForm.controls['function_name']['errors'] && permissionPutForm.controls['function_name']['touched']">
+            <span *ngIf="permissionPutForm.controls['function_name']['errors']['required']">
+              Function Name is required.
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-success" [disabled]="permissionPutForm.invalid || permissionsPaginate.isPutLoading">
+          <span *ngIf="!permissionsPaginate.isPutLoading">
+            <i class="fa-solid fa-save me-1"></i>
+          </span>
+          <span *ngIf="permissionsPaginate.isPutLoading">
+            <i class="fa-solid fa-circle-notch spin me-1"></i>
+          </span>
+          Save
+        </button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" tabindex="-1">
+          <i class="fa-solid fa-close me-1"></i>
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</form>

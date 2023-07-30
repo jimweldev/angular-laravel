@@ -1,0 +1,161 @@
+// NG SELECT
+@import "~@ng-select/ng-select/themes/default.theme.css";
+
+.ng-select.ng-invalid.ng-touched .ng-select-container {
+  border-color: #dc3545;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 0 3px #fde6e8;
+}
+
+.login {
+  max-width: 450px;
+  margin: 0 auto;
+}
+
+.sidebar-link.active {
+  background: linear-gradient(
+    90deg,
+    rgba(59, 125, 221, 0.1),
+    rgba(59, 125, 221, 0.088) 50%,
+    transparent
+  );
+  border-left-color: #3b7ddd;
+  color: #e9ecef;
+}
+
+.sidebar-link.active i,
+.sidebar-link.active svg {
+  color: #e9ecef;
+}
+
+.sidebar-user {
+  padding: 0.75rem 1.5rem;
+}
+
+.sidebar-user a {
+  outline: 0;
+  text-decoration: none;
+}
+
+.sidebar-user-subtitle, .sidebar-user-subtitle {
+  color: #adb5bd;
+}
+
+.sidebar-user-title, .sidebar-user-title:hover, .sidebar-user-title, .sidebar-user-title:hover {
+  color: #e9ecef;
+}
+
+.navbar .navbar-nav.me-auto .nav-item .nav-link {
+  width: 70px;
+  margin: -14px 0;
+  border-radius: 5px;
+  text-transform: uppercase;
+  transition: all 300ms ease-in-out;
+}
+
+.navbar .navbar-nav.me-auto .nav-item .nav-link.active {
+  background-color: #222e3c;
+  color: white;
+}
+
+.navbar .navbar-nav.me-auto .nav-item .nav-link span {
+  margin-top: 2px;
+  letter-spacing: 0.3px;
+  font-size: 10px !important;
+}
+
+.overlay {
+  z-index: 100;
+
+  position: absolute;
+  inset: 0;
+
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.btn-light, 
+.btn-light:hover {
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.spin {
+  animation-name: spin;
+  animation-duration: 1000ms;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}
+
+@keyframes spin {
+  from {
+    transform:rotate(0deg);
+  }
+  to {
+    transform:rotate(360deg);
+  }
+}
+
+.card-header {
+  padding-bottom: 0;
+}
+
+.nav-tabs .nav-link {
+  color: rgba(73,80,87,.75);
+}
+
+.page-item .page-link {
+  text-decoration: none !important;
+}
+
+.form-control,
+.ng-select .ng-select-container {
+  border-radius: 0.3rem;
+  border-color: #dee2e6;
+  font-size: .925rem;
+  min-height: calc(2.1875rem + 2px);
+}
+
+.form-control-sm {
+  border-radius: 0.1rem !important;
+  font-size: .75rem !important;
+  min-height: calc(1.525rem + 2px) !important;
+  padding: 0.2rem 0.5rem !important;
+}
+
+.input-group-sm .form-control {
+  border-radius: 0.1rem !important;
+  font-size: .75rem !important;
+  min-height: calc(1.525rem + 2px) !important;
+  padding: 0.2rem 0.5rem !important;
+}
+
+.form-control.invalid,
+.form-select.invalid,
+.ng-select.ng-invalid.ng-touched .ng-select-container {
+  border-color: #dc3545;
+}
+
+.form-control.invalid:focus,
+.form-select.invalid:focus,
+.ng-select.ng-invalid.ng-touched .ng-select-container:focus {
+  border-color: #dc3545;
+  box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25);
+}
+
+.form-switch {
+  margin: 3px 0 !important;
+}
+
+.form-switch .form-check-input {
+  width: 35px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.input-group .ng-select .ng-select-container {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.input-group .ng-select {
+  position: relative;
+  flex: 1 1 0;
+}

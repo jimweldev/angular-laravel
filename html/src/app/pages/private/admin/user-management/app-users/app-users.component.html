@@ -1,0 +1,202 @@
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="h3 mb-0">
+    <i class="fa-solid fa-users-line"></i>
+    App Users
+  </h1>
+
+  <div>
+    <button class="btn btn-primary btn-sm ms-2" data-bs-toggle="modal" data-bs-target="#addAppUserModal">
+      <i class="fa-solid fa-plus me-1"></i>
+      Add
+    </button>
+    <button class="btn btn-light btn-sm ms-2" (click)="onRefresh('appUsersPaginate')" [disabled]="appUsersPaginate.isGetLoading">
+      <span *ngIf="!appUsersPaginate.isGetLoading">
+        <i class="fa-solid fa-spinner me-1"></i>
+      </span>
+      <span *ngIf="appUsersPaginate.isGetLoading">
+        <i class="fa-solid fa-circle-notch spin me-1"></i>
+      </span>
+      Refresh
+    </button>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-body">
+    <div class="d-flex justify-content-between align-items-center mb-3 flex-column flex-sm-row gap-2">
+      <div class="d-flex justify-content-between align-items-center">
+        <span>Show:&nbsp;</span>
+        <select class="form-control form-control-sm" [(ngModel)]="appUsersPaginate.limit" (change)="appUsersPaginate.page = 1; onRefresh('appUsersPaginate')">
+          <option value="10">10</option>
+          <option value="25">25</option>
+          <option value="50">50</option>
+          <option value="100">100</option>
+        </select>
+        <span>&nbsp;entries</span>
+      </div>
+
+      <div class="d-flex justify-content-between align-items-center">
+        <span>Search:&nbsp;</span>
+        <input class="form-control form-control-sm" type="text" [(ngModel)]="appUsersPaginate.search" (input)="onInputSearch('appUsersPaginate')">
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-striped table-hover table-sm">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Username</th>
+            <th>Pass Key</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let appUser of appUsersPaginate.records;">
+            <td>{{ appUser.id }}</td>
+            <td>{{ appUser.username }}</td>
+            <td>{{ appUser.pass_key }}</td>
+            <td>
+              <div class="btn-group btn-group-sm">
+                <button class="btn btn-info" (click)="onEdit('appUsers', appUser)" data-bs-toggle="modal" data-bs-target="#updateUserModal">
+                  <i class="fa-solid fa-pen-to-square"></i>
+                </button>
+                <button class="btn btn-danger" (click)="onDelete('appUsers', appUser)">
+                  <i class="fa-solid fa-trash-can"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+          <tr *ngIf="appUsersPaginate.records.length === 0">
+            <td class="text-center" colspan="100%">No records to show.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center flex-column flex-sm-row gap-2">
+      <p class="mb-0">
+        Showing {{ appUsersPaginate.records.length > 0 ? (appUsersPaginate.page - 1) * appUsersPaginate.limit + 1 : 0 }} 
+        to {{ (appUsersPaginate.page - 1) * appUsersPaginate.limit + appUsersPaginate.records.length }}
+        of {{ appUsersPaginate.totalRecords }}
+      </p>
+      
+      <ngb-pagination
+        [(page)]="appUsersPaginate.page"
+        [pageSize]="appUsersPaginate.totalPages"
+        [collectionSize]="appUsersPaginate.totalPages"
+        (pageChange)="onRefresh('appUsersPaginate')"
+        [maxSize]="3"
+        [rotate]="true"
+        size="sm mb-0"
+      ></ngb-pagination>
+    </div>
+
+    <app-table-loading [isLoading]="appUsersPaginate.isGetLoading"></app-table-loading>
+  </div>
+</div>
+
+<!-- Modal -->
+<!-- CREATE -->
+<form class="modal fade" id="addAppUserModal" tabindex="-1" data-bs-backdrop="static" [formGroup]="appUserPostForm" (ngSubmit)="onSubmit('appUsers');">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5">
+          <i class="fa-solid fa-plus me-1"></i>
+          Add App User
+        </h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label>Username</label>
+          <input class="form-control {{ appUserPostForm.controls['username']['errors'] && appUserPostForm.controls['username']['touched'] && 'invalid' }}" type="text" formControlName="username">
+          <div class="text-danger" *ngIf="appUserPostForm.controls['username']['errors'] && appUserPostForm.controls['username']['touched']">
+            <span *ngIf="appUserPostForm.controls['username']['errors']['required']">
+              Username is required.
+            </span>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label>Pass Key</label>
+          <input class="form-control {{ appUserPostForm.controls['pass_key']['errors'] && appUserPostForm.controls['pass_key']['touched'] && 'invalid' }}" type="text" formControlName="pass_key">
+          <div class="text-danger" *ngIf="appUserPostForm.controls['pass_key']['errors'] && appUserPostForm.controls['pass_key']['touched']">
+            <span *ngIf="appUserPostForm.controls['pass_key']['errors']['required']">
+              Pass Key.
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-success" [disabled]="appUserPostForm.invalid || appUsersPaginate.isPostLoading">
+          <span *ngIf="!appUsersPaginate.isPostLoading">
+            <i class="fa-solid fa-save me-1"></i>
+          </span>
+          <span *ngIf="appUsersPaginate.isPostLoading">
+            <i class="fa-solid fa-circle-notch spin me-1"></i>
+          </span>
+          Save
+        </button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" tabindex="-1">
+          <i class="fa-solid fa-close me-1"></i>
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</form>
+
+<!-- UPDATE -->
+<form class="modal fade" id="updateUserModal" tabindex="-1" data-bs-backdrop="static" [formGroup]="appUserPutForm" (ngSubmit)="onUpdate('appUsers');">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5">
+          <i class="fa-solid fa-pen-to-square me-1"></i>
+          Edit App User
+        </h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label>ID</label>
+          <input class="form-control" type="text" formControlName="id" readonly>
+        </div>
+        <div class="mb-3">
+          <label>Username</label>
+          <input class="form-control {{ appUserPutForm.controls['username']['errors'] && appUserPutForm.controls['username']['touched'] && 'invalid' }}" type="text" formControlName="username">
+          <div class="text-danger" *ngIf="appUserPutForm.controls['username']['errors'] && appUserPutForm.controls['username']['touched']">
+            <span *ngIf="appUserPutForm.controls['username']['errors']['required']">
+              Username is required.
+            </span>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label>Pass Key</label>
+          <input class="form-control {{ appUserPutForm.controls['pass_key']['errors'] && appUserPutForm.controls['pass_key']['touched'] && 'invalid' }}" type="text" formControlName="pass_key">
+          <div class="text-danger" *ngIf="appUserPutForm.controls['pass_key']['errors'] && appUserPutForm.controls['pass_key']['touched']">
+            <span *ngIf="appUserPutForm.controls['pass_key']['errors']['required']">
+              Pass Key is required.
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-success" [disabled]="appUserPutForm.invalid || appUsersPaginate.isPutLoading">
+          <span *ngIf="!appUsersPaginate.isPutLoading">
+            <i class="fa-solid fa-save me-1"></i>
+          </span>
+          <span *ngIf="appUsersPaginate.isPutLoading">
+            <i class="fa-solid fa-circle-notch spin me-1"></i>
+          </span>
+          Update
+        </button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" tabindex="-1">
+          <i class="fa-solid fa-close me-1"></i>
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</form>

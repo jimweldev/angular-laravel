@@ -1,0 +1,236 @@
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="h3 mb-0">
+    <i class="fa-solid fa-square-caret-down"></i>
+    System Dropdowns
+  </h1>
+
+  <div>
+    <button class="btn btn-primary btn-sm ms-2" data-bs-toggle="modal" data-bs-target="#addSystemDropdownModal">
+      <i class="fa-solid fa-plus me-1"></i>
+      Add
+    </button>
+    <button class="btn btn-light btn-sm ms-2" (click)="onRefresh('systemDropdownsPaginate')" [disabled]="systemDropdownsPaginate.isGetLoading">
+      <span *ngIf="!systemDropdownsPaginate.isGetLoading">
+        <i class="fa-solid fa-spinner me-1"></i>
+      </span>
+      <span *ngIf="systemDropdownsPaginate.isGetLoading">
+        <i class="fa-solid fa-circle-notch spin me-1"></i>
+      </span>
+      Refresh
+    </button>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-body">
+    <div class="d-flex justify-content-between align-items-center mb-3 flex-column flex-sm-row gap-2">
+      <div class="d-flex justify-content-between align-items-center">
+        <span>Show:&nbsp;</span>
+        <select class="form-control form-control-sm" [(ngModel)]="systemDropdownsPaginate.limit" (change)="systemDropdownsPaginate.page = 1; onRefresh('systemDropdownsPaginate')">
+          <option module="10">10</option>
+          <option module="25">25</option>
+          <option module="50">50</option>
+          <option module="100">100</option>
+        </select>
+        <span>&nbsp;entries</span>
+      </div>
+
+      <div class="d-flex justify-content-between align-items-center">
+        <span>Search:&nbsp;</span>
+        <input class="form-control form-control-sm" type="text" [(ngModel)]="systemDropdownsPaginate.search" (input)="onInputSearch('systemDropdownsPaginate')">
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-striped table-hover table-sm">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Module</th>
+            <th>Name</th>
+            <th>Value</th>
+            <th>Default</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let systemDropdown of systemDropdownsPaginate.records;">
+            <td>{{ systemDropdown.id }}</td>
+            <td>{{ systemDropdown.module }}</td>
+            <td>{{ systemDropdown.name }}</td>
+            <td>{{ systemDropdown.value }}</td>
+            <td>{{ systemDropdown.default }}</td>
+            <td>
+              <div class="btn-group btn-group-sm">
+                <button class="btn btn-info" (click)="onEdit('systemDropdowns', systemDropdown)" data-bs-toggle="modal" data-bs-target="#updateUserModal">
+                  <i class="fa-solid fa-pen-to-square"></i>
+                </button>
+                <button class="btn btn-danger" (click)="onDelete('systemDropdowns', systemDropdown)">
+                  <i class="fa-solid fa-trash-can"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+          <tr *ngIf="systemDropdownsPaginate.records.length === 0">
+            <td class="text-center" colspan="100%">No records to show.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center flex-column flex-sm-row gap-2">
+      <p class="mb-0">
+        Showing {{ systemDropdownsPaginate.records.length > 0 ? (systemDropdownsPaginate.page - 1) * systemDropdownsPaginate.limit + 1 : 0 }} 
+        to {{ (systemDropdownsPaginate.page - 1) * systemDropdownsPaginate.limit + systemDropdownsPaginate.records.length }}
+        of {{ systemDropdownsPaginate.totalRecords }}
+      </p>
+      
+      <ngb-pagination
+        [(page)]="systemDropdownsPaginate.page"
+        [pageSize]="systemDropdownsPaginate.totalPages"
+        [collectionSize]="systemDropdownsPaginate.totalPages"
+        (pageChange)="onRefresh('systemDropdownsPaginate')"
+        [maxSize]="3"
+        [rotate]="true"
+        size="sm mb-0"
+      ></ngb-pagination>
+    </div>
+
+    <app-table-loading [isLoading]="systemDropdownsPaginate.isGetLoading"></app-table-loading>
+  </div>
+</div>
+
+<!-- Modal -->
+<!-- CREATE -->
+<form class="modal fade" id="addSystemDropdownModal" tabindex="-1" data-bs-backdrop="static" [formGroup]="systemDropdownPostForm" (ngSubmit)="onSubmit('systemDropdowns');">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5">
+          <i class="fa-solid fa-plus me-1"></i>
+          Add System Dropdown
+        </h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label>Module</label>
+          <input class="form-control {{ systemDropdownPostForm.controls['module']['errors'] && systemDropdownPostForm.controls['module']['touched'] && 'invalid' }}" type="text" formControlName="module">
+          <div class="text-danger" *ngIf="systemDropdownPostForm.controls['module']['errors'] && systemDropdownPostForm.controls['module']['touched']">
+            <span *ngIf="systemDropdownPostForm.controls['module']['errors']['required']">
+              Module is required.
+            </span>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label>Name</label>
+          <input class="form-control {{ systemDropdownPostForm.controls['name']['errors'] && systemDropdownPostForm.controls['name']['touched'] && 'invalid' }}" name="text" formControlName="name">
+          <div class="text-danger" *ngIf="systemDropdownPostForm.controls['name']['errors'] && systemDropdownPostForm.controls['name']['touched']">
+            <span *ngIf="systemDropdownPostForm.controls['name']['errors']['required']">
+              Name is required.
+            </span>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label>Value</label>
+          <input class="form-control {{ systemDropdownPostForm.controls['value']['errors'] && systemDropdownPostForm.controls['value']['touched'] && 'invalid' }}" type="text" formControlName="value">
+          <div class="text-danger" *ngIf="systemDropdownPostForm.controls['value']['errors'] && systemDropdownPostForm.controls['value']['touched']">
+            <span *ngIf="systemDropdownPostForm.controls['value']['errors']['required']">
+              Value is required.
+            </span>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label>Default</label>
+          <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" formControlName="default">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-success" [disabled]="systemDropdownPostForm.invalid || systemDropdownsPaginate.isPostLoading">
+          <span *ngIf="!systemDropdownsPaginate.isPostLoading">
+            <i class="fa-solid fa-save me-1"></i>
+          </span>
+          <span *ngIf="systemDropdownsPaginate.isPostLoading">
+            <i class="fa-solid fa-circle-notch spin me-1"></i>
+          </span>
+          Save
+        </button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" tabindex="-1">
+          <i class="fa-solid fa-close me-1"></i>
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</form>
+
+<!-- UPDATE -->
+<form class="modal fade" id="updateUserModal" tabindex="-1" data-bs-backdrop="static" [formGroup]="systemDropdownPutForm" (ngSubmit)="onUpdate('systemDropdowns');">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5">
+          <i class="fa-solid fa-pen-to-square me-1"></i>
+          Edit System Dropdown
+        </h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label>ID</label>
+          <input class="form-control" type="text" formControlName="id" readonly>
+        </div>
+        <div class="mb-3">
+          <label>Module</label>
+          <input class="form-control {{ systemDropdownPutForm.controls['module']['errors'] && systemDropdownPutForm.controls['module']['touched'] && 'invalid' }}" type="text" formControlName="module">
+          <div class="text-danger" *ngIf="systemDropdownPutForm.controls['module']['errors'] && systemDropdownPutForm.controls['module']['touched']">
+            <span *ngIf="systemDropdownPutForm.controls['module']['errors']['required']">
+              Module is required.
+            </span>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label>Name</label>
+          <input class="form-control {{ systemDropdownPutForm.controls['name']['errors'] && systemDropdownPutForm.controls['name']['touched'] && 'invalid' }}" name="text" formControlName="name">
+          <div class="text-danger" *ngIf="systemDropdownPutForm.controls['name']['errors'] && systemDropdownPutForm.controls['name']['touched']">
+            <span *ngIf="systemDropdownPutForm.controls['name']['errors']['required']">
+              Name is required.
+            </span>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label>Value</label>
+          <input class="form-control {{ systemDropdownPutForm.controls['value']['errors'] && systemDropdownPutForm.controls['value']['touched'] && 'invalid' }}" type="text" formControlName="value">
+          <div class="text-danger" *ngIf="systemDropdownPutForm.controls['value']['errors'] && systemDropdownPutForm.controls['value']['touched']">
+            <span *ngIf="systemDropdownPutForm.controls['value']['errors']['required']">
+              Value is required.
+            </span>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label>Default</label>
+          <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" formControlName="default">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-success" [disabled]="systemDropdownPutForm.invalid || systemDropdownsPaginate.isPutLoading">
+          <span *ngIf="!systemDropdownsPaginate.isPutLoading">
+            <i class="fa-solid fa-save me-1"></i>
+          </span>
+          <span *ngIf="systemDropdownsPaginate.isPutLoading">
+            <i class="fa-solid fa-circle-notch spin me-1"></i>
+          </span>
+          Update
+        </button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" tabindex="-1">
+          <i class="fa-solid fa-close me-1"></i>
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</form>

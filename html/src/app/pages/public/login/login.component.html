@@ -1,0 +1,28 @@
+<form class="card login" [formGroup]="loginForm" (ngSubmit)="onSubmit('login');">
+  <div class="card-body">
+    <div class="mb-3">
+      <label>Username</label>
+      <input class="form-control form-control-lg" type="text" formControlName="email">
+      <div class="text-danger" *ngIf="loginForm.controls['email']['errors'] && loginForm.controls['email']['touched']">
+        <span *ngIf="loginForm.controls['email']['errors']['required']">
+          Username is required.
+        </span>
+      </div>
+    </div>
+    <div class="mb-3">
+      <label>Password</label>
+      <input class="form-control form-control-lg" type="password" formControlName="password">
+      <div class="text-danger" *ngIf="loginForm.controls['password']['errors'] && loginForm.controls['password']['touched']">
+        <span *ngIf="loginForm.controls['password']['errors']['required']">
+          Password is required.
+        </span>
+      </div>
+    </div>
+    <div class="text-center">
+      <button class="btn btn-lg btn-success" [disabled]="loginForm.invalid || isLoginLoading">
+        <i class="fa-solid fa-sign-in-alt me-2"></i>
+        <span class="align-middle">Submit</span>
+      </button>
+    </div>
+  </div>
+</form>

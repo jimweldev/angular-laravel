@@ -1,0 +1,42 @@
+import { InjectionToken } from "@angular/core";
+
+export let APP_CONFIG = new InjectionToken("app.config");
+
+export interface IAppConfig {
+  API_ENDPOINT: string;
+  APP_VERSION: string;
+  ASSET_ENDPOINT: string;
+  APP_BUILD: string;
+  APP_NAME: string;
+  APP_UPDATE: string;
+}
+
+export const AppConfig: IAppConfig = {
+  /** BUILD VERSION */
+  APP_VERSION: "Version 1.0.0",
+  APP_BUILD: "Build #0001",
+  APP_UPDATE: "3-Nov-2022 PST", 
+
+  /************************************************************************************************************************
+   * PROD BUILD
+   ************************************************************************************************************************/
+  // ASSET_ENDPOINT:       'https://cxforms-api.connextglobal.com/employee_images/',
+  // API_ENDPOINT:         'https://cxforms-api.connextglobal.com',
+  // APP_NAME:             'MegaTool',
+
+  /************************************************************************************************************************
+   * TEST BUILD
+   ************************************************************************************************************************/
+  // ASSET_ENDPOINT:       'https://test-megaform-api.connextglobal.com/employee_images/',
+  // API_ENDPOINT:         'https://test-megaform-api.connextglobal.com',
+  // APP_NAME:             'MegaToolTest',
+
+  /************************************************************************************************************************
+   * DEV LOCAL
+   ************************************************************************************************************************/
+  API_ENDPOINT: "http://angular-template.com", // DEV (use if running vagrant API)
+  ASSET_ENDPOINT: "http://angular-template.com/employee_images/", // EMPLOYEE IMAGE
+  APP_NAME: "Angular Template",
+
+  // API_ENDPOINT: "http://localhost:8999", // DEV (use if running php -S)
+};

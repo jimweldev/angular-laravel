@@ -16,11 +16,11 @@ export class SystemUsersComponent implements OnInit, OnDestroy {
   timeoutId: any = null;
 
   userPostForm: FormGroup = this.formBuilder.group({
-    username: ['', Validators.required],
+    username: ['', [Validators.required, Validators.email]],
     password: ['', Validators.required],
     password_confirmation: ['', Validators.required],
-    email: ['', Validators.required],
-    alternate_email: ['', Validators.required],
+    email: ['', [Validators.required, Validators.email]],
+    alternate_email: ['', [Validators.email]],
     last_name: ['', Validators.required],
     first_name: ['', Validators.required],
     middle_name: ['', Validators.required],
@@ -30,9 +30,11 @@ export class SystemUsersComponent implements OnInit, OnDestroy {
 
   userPutForm: FormGroup = this.formBuilder.group({
     id: ['', Validators.required],
-    username: ['', Validators.required],
-    email: ['', Validators.required],
-    alternate_email: ['', Validators.required],
+    username: ['', [Validators.required, Validators.email]],
+    password: ['', Validators.required],
+    password_confirmation: ['', Validators.required],
+    email: ['', [Validators.required, Validators.email]],
+    alternate_email: ['', [Validators.email]],
     last_name: ['', Validators.required],
     first_name: ['', Validators.required],
     middle_name: ['', Validators.required],
@@ -178,7 +180,7 @@ export class SystemUsersComponent implements OnInit, OnDestroy {
   userPostSubscription = this.userService.userPost.subscribe(
     (response: any) => {
       if (response.ok) {
-        this.userPostForm.reset();
+        this.userPostForm.reset({ is_admin: false });
 
         this.onRefresh('usersPaginate');
 

@@ -118,6 +118,9 @@
             <span *ngIf="userPostForm.controls['username']['errors']['required']">
               Username is required.
             </span>
+            <span *ngIf="userPostForm.controls['username']['errors']['email']">
+              Invalid username format.
+            </span>
           </div>
         </div>
         <div class="mb-3">
@@ -145,14 +148,17 @@
             <span *ngIf="userPostForm.controls['email']['errors']['required']">
               Email is required.
             </span>
+            <span *ngIf="userPostForm.controls['email']['errors']['email']">
+              Invalid email format.
+            </span>
           </div>
         </div>
         <div class="mb-3">
           <label>Alternate Email</label>
           <input class="form-control {{ userPostForm.controls['alternate_email']['errors'] && userPostForm.controls['alternate_email']['touched'] && 'invalid' }}" type="text" formControlName="alternate_email">
           <div class="text-danger" *ngIf="userPostForm.controls['alternate_email']['errors'] && userPostForm.controls['alternate_email']['touched']">
-            <span *ngIf="userPostForm.controls['alternate_email']['errors']['required']">
-              Alternate Email is required.
+            <span *ngIf="userPostForm.controls['alternate_email']['errors']['email']">
+              Invalid email format.
             </span>
           </div>
         </div>

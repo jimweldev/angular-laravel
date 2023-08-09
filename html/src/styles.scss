@@ -75,6 +75,7 @@
 .btn-light, 
 .btn-light:hover {
   border: 1px solid rgba(0, 0, 0, 0.05);
+  background-color: #fefefe !important;
 }
 
 .spin {
@@ -111,6 +112,15 @@
   border-color: #dee2e6;
   font-size: .925rem;
   min-height: calc(2.1875rem + 2px);
+}
+
+.form-control:focus,
+.ng-select:focus .ng-select-container {
+  background-color: #fff !important;
+  border-color: #9dbeee !important;
+  box-shadow: 0 0 0 .25rem rgba(59,125,221,.25) !important;
+  color: #495057 !important;
+  outline: 0 !important;
 }
 
 .form-control-sm {
@@ -158,4 +168,11 @@
 .input-group .ng-select {
   position: relative;
   flex: 1 1 0;
+}
+
+input[readonly],
+input[readonly].form-control:focus {
+  background-color: #dee2e6 !important;
+  box-shadow: none !important;
+  cursor: default;
 }

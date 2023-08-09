@@ -163,7 +163,7 @@ export class SystemDropdownsComponent implements OnInit, OnDestroy {
   systemDropdownPostSubscription = this.systemDropdownService.systemDropdownPost.subscribe(
     (response: any) => {
       if (response.ok) {
-        this.systemDropdownPostForm.reset();
+        this.systemDropdownPostForm.reset({ default: false });
 
         this.onRefresh('systemDropdownsPaginate');
 

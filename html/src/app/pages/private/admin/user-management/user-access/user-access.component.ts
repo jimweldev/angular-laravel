@@ -25,37 +25,37 @@ export class UserAccessComponent implements OnInit, OnDestroy {
   });
 
   userRolePutForm: FormGroup = this.formBuilder.group({
-    id: [null, Validators.required],
+    id: ['', Validators.required],
     user_id: [null, Validators.required],
     role_id: [null, Validators.required],
   });
 
   rolePostForm: FormGroup = this.formBuilder.group({
-    name: [null, Validators.required],
+    name: ['', Validators.required],
   });
 
   rolePutForm: FormGroup = this.formBuilder.group({
-    id: [null, Validators.required],
-    name: [null, Validators.required],
+    id: ['', Validators.required],
+    name: ['', Validators.required],
   });
 
   rolePermissionPostForm: FormGroup = this.formBuilder.group({
-    role_id: [null, Validators.required],
-    name: [null, Validators.required],
+    role_id: ['', Validators.required],
+    name: ['', Validators.required],
     permission_ids: [null, Validators.required],
   });
 
   permissionPostForm: FormGroup = this.formBuilder.group({
-    name: [null, Validators.required],
-    controller: [null, Validators.required],
-    function_name: [null, Validators.required],
+    name: ['', Validators.required],
+    controller: ['', Validators.required],
+    function_name: ['', Validators.required],
   });
 
   permissionPutForm: FormGroup = this.formBuilder.group({
-    id: [null, Validators.required],
-    name: [null, Validators.required],
-    controller: [null, Validators.required],
-    function_name: [null, Validators.required],
+    id: ['', Validators.required],
+    name: ['', Validators.required],
+    controller: ['', Validators.required],
+    function_name: ['', Validators.required],
   });
 
   userList: any = {

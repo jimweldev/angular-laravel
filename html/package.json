@@ -12,6 +12,7 @@
   "dependencies": {
     "@adminkit/core": "^3.4.0",
     "@angular/animations": "^16.1.0",
+    "@angular/cli": "^16.1.8",
     "@angular/common": "^16.1.0",
     "@angular/compiler": "^16.1.0",
     "@angular/core": "^16.1.0",

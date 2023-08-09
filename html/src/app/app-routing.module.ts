@@ -11,16 +11,16 @@ import { AdminLayoutComponent } from '@layouts/admin-layout/admin-layout.compone
 import { RedirectLayoutComponent } from '@layouts/redirect-layout/redirect-layout.component';
 import { AdminComponent } from '@pages/private/admin/admin.component';
 import { UserManagementComponent } from '@pages/private/admin/user-management/user-management.component';
-import { ConfigurationsComponent } from '@pages/private/admin/configurations/configurations.component';
 import { LogsComponent } from '@pages/private/admin/logs/logs.component';
 import { SystemUsersComponent } from '@pages/private/admin/user-management/system-users/system-users.component';
 import { AppUsersComponent } from '@pages/private/admin/user-management/app-users/app-users.component';
 import { UserAccessComponent } from '@pages/private/admin/user-management/user-access/user-access.component';
-import { SystemSettingsComponent } from '@pages/private/admin/configurations/system-settings/system-settings.component';
-import { SystemDropdownsComponent } from '@pages/private/admin/configurations/system-dropdowns/system-dropdowns.component';
+import { SystemSettingsComponent } from '@pages/private/admin/settings/system-settings/system-settings.component';
+import { SystemDropdownsComponent } from '@pages/private/admin/settings/system-dropdowns/system-dropdowns.component';
 import { MailLogsComponent } from '@pages/private/admin/logs/mail-logs/mail-logs.component';
 import { SystemLogsComponent } from '@pages/private/admin/logs/system-logs/system-logs.component';
 import { UserLogsComponent } from '@pages/private/admin/logs/user-logs/user-logs.component';
+import { SettingsComponent } from '@pages/private/admin/settings/settings.component';
 
 const routes: Routes = [
   // PRIVATE ROUTES
@@ -32,7 +32,7 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        component: RedirectLayoutComponent
+        component: RedirectLayoutComponent,
       },
 
       // HOME
@@ -42,17 +42,17 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            component: HomeComponent
+            component: HomeComponent,
           },
           {
             path: 'profile',
-            component: HomeComponent
+            component: HomeComponent,
           },
           {
             path: 'users',
-            component: HomeComponent
+            component: HomeComponent,
           },
-        ]
+        ],
       },
 
       // ADMIN
@@ -62,7 +62,7 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            component: AdminComponent
+            component: AdminComponent,
           },
 
           // USER MANAGEMENT
@@ -72,33 +72,33 @@ const routes: Routes = [
             children: [
               {
                 path: 'system-users',
-                component: SystemUsersComponent
+                component: SystemUsersComponent,
               },
               {
                 path: 'app-users',
-                component: AppUsersComponent
+                component: AppUsersComponent,
               },
               {
                 path: 'user-access',
-                component: UserAccessComponent
+                component: UserAccessComponent,
               },
-            ]
+            ],
           },
 
-          // CONFIGURATIONS
+          // SETTINGS
           {
-            path: 'configurations',
-            component: ConfigurationsComponent,
+            path: 'settings',
+            component: SettingsComponent,
             children: [
               {
                 path: 'system-settings',
-                component: SystemSettingsComponent
+                component: SystemSettingsComponent,
               },
               {
                 path: 'system-dropdowns',
-                component: SystemDropdownsComponent
+                component: SystemDropdownsComponent,
               },
-            ]
+            ],
           },
 
           // LOGS
@@ -108,21 +108,21 @@ const routes: Routes = [
             children: [
               {
                 path: 'mail-logs',
-                component: MailLogsComponent
+                component: MailLogsComponent,
               },
               {
                 path: 'system-logs',
-                component: SystemLogsComponent
+                component: SystemLogsComponent,
               },
               {
                 path: 'user-logs',
-                component: UserLogsComponent
+                component: UserLogsComponent,
               },
-            ]
-          }
-        ]
+            ],
+          },
+        ],
       },
-    ]
+    ],
   },
 
   // PUBLIC ROUTES
@@ -135,15 +135,15 @@ const routes: Routes = [
       {
         path: 'login',
         component: LoginComponent,
-      }
-    ]
+      },
+    ],
   },
-  
-  {path: '**', redirectTo: ''}
+
+  { path: '**', redirectTo: '' },
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

@@ -83,8 +83,8 @@
       
       <ngb-pagination
         [(page)]="appUsersPaginate.page"
-        [pageSize]="appUsersPaginate.totalPages"
-        [collectionSize]="appUsersPaginate.totalPages"
+        [pageSize]="appUsersPaginate.limit"
+        [collectionSize]="appUsersPaginate.totalRecords"
         (pageChange)="onRefresh('appUsersPaginate')"
         [maxSize]="3"
         [rotate]="true"

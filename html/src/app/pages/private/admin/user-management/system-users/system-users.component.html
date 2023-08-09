@@ -85,8 +85,8 @@
       
       <ngb-pagination
         [(page)]="usersPaginate.page"
-        [pageSize]="usersPaginate.totalPages"
-        [collectionSize]="usersPaginate.totalPages"
+        [pageSize]="usersPaginate.limit"
+        [collectionSize]="usersPaginate.totalRecords"
         (pageChange)="onRefresh('usersPaginate')"
         [maxSize]="3"
         [rotate]="true"

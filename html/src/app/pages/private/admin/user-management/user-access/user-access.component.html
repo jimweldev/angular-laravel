@@ -107,8 +107,8 @@
           
           <ngb-pagination
             [(page)]="userRolesPaginate.page"
-            [pageSize]="userRolesPaginate.totalPages"
-            [collectionSize]="userRolesPaginate.totalPages"
+            [pageSize]="userRolesPaginate.limit"
+            [collectionSize]="userRolesPaginate.totalRecords"
             (pageChange)="onRefresh('userRolesPaginate')"
             [maxSize]="3"
             [rotate]="true"
@@ -198,8 +198,8 @@
           
           <ngb-pagination
             [(page)]="rolesPaginate.page"
-            [pageSize]="rolesPaginate.totalPages"
-            [collectionSize]="rolesPaginate.totalPages"
+            [pageSize]="rolesPaginate.limit"
+            [collectionSize]="rolesPaginate.totalRecords"
             (pageChange)="onRefresh('rolesPaginate')"
             [maxSize]="3"
             [rotate]="true"
@@ -288,8 +288,8 @@
           
           <ngb-pagination
             [(page)]="permissionsPaginate.page"
-            [pageSize]="permissionsPaginate.totalPages"
-            [collectionSize]="permissionsPaginate.totalPages"
+            [pageSize]="permissionsPaginate.limit"
+            [collectionSize]="permissionsPaginate.totalRecords"
             (pageChange)="onRefresh('permissionsPaginate')"
             [maxSize]="3"
             [rotate]="true"

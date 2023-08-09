@@ -87,8 +87,8 @@
       
       <ngb-pagination
         [(page)]="systemSettingsPaginate.page"
-        [pageSize]="systemSettingsPaginate.totalPages"
-        [collectionSize]="systemSettingsPaginate.totalPages"
+        [pageSize]="systemSettingsPaginate.limit"
+        [collectionSize]="systemSettingsPaginate.totalRecords"
         (pageChange)="onRefresh('systemSettingsPaginate')"
         [maxSize]="3"
         [rotate]="true"

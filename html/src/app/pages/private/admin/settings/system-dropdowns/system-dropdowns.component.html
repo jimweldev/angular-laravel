@@ -87,8 +87,8 @@
       
       <ngb-pagination
         [(page)]="systemDropdownsPaginate.page"
-        [pageSize]="systemDropdownsPaginate.totalPages"
-        [collectionSize]="systemDropdownsPaginate.totalPages"
+        [pageSize]="systemDropdownsPaginate.limit"
+        [collectionSize]="systemDropdownsPaginate.totalRecords"
         (pageChange)="onRefresh('systemDropdownsPaginate')"
         [maxSize]="3"
         [rotate]="true"

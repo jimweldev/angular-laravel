@@ -62,8 +62,8 @@
             <td>{{ mailLog.sender_email }}</td>
             <td>{{ mailLog.subject }}</td>
             <td>{{ mailLog.link }}</td>
-            <td>{{ mailLog.is_sent }}</td>
-            <td>{{ mailLog.is_opened }}</td>
+            <td>{{ mailLog.is_sent ? 'Yes' : 'No' }}</td>
+            <td>{{ mailLog.is_opened ? 'Yes' : 'No' }}</td>
             <td>{{ mailLog.created_at | date: 'MMMM dd, y hh:mm:ss a' }}</td>
           </tr>
           <tr *ngIf="mailLogsPaginate.records.length === 0">
@@ -82,8 +82,8 @@
       
       <ngb-pagination
         [(page)]="mailLogsPaginate.page"
-        [pageSize]="mailLogsPaginate.totalPages"
-        [collectionSize]="mailLogsPaginate.totalPages"
+        [pageSize]="mailLogsPaginate.limit"
+        [collectionSize]="mailLogsPaginate.totalRecords"
         (pageChange)="onRefresh('mailLogsPaginate')"
         [maxSize]="3"
         [rotate]="true"

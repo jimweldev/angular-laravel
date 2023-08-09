@@ -76,8 +76,8 @@
       
       <ngb-pagination
         [(page)]="systemLogsPaginate.page"
-        [pageSize]="systemLogsPaginate.totalPages"
-        [collectionSize]="systemLogsPaginate.totalPages"
+        [pageSize]="systemLogsPaginate.limit"
+        [collectionSize]="systemLogsPaginate.totalRecords"
         (pageChange)="onRefresh('systemLogsPaginate')"
         [maxSize]="3"
         [rotate]="true"
